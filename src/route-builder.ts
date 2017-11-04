@@ -1,4 +1,5 @@
-import { ApiServer, NextFunction, Request, Response, Router } from "./api";
+import { ApiServer } from "./api";
+import { NextFunction, Request, Response, Router } from 'express';
 
 export class RouteBuilder {
     private url: string = "";
@@ -80,10 +81,6 @@ export class RouteBuilder {
 
                 if (!this.isResponseSent) {
                     this.responseJson(response, this.responseBody);
-                }
-
-                if (!this.isResponseSent) {
-                    next();
                 }
             });
     }

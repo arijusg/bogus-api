@@ -1,11 +1,10 @@
+export { RouteBuilder } from "./route-builder";
+
 import { spawn } from "child_process";
 import * as jsonServer from "json-server";
-export { Router, Request, Response, NextFunction } from "express";
-
 import { Express, NextFunction, Request, Response, Router } from "express";
 
 import { RouteBuilder } from "./route-builder";
-export { RouteBuilder } from "./route-builder";
 
 export class ApiServer {
 
@@ -81,32 +80,5 @@ export class ApiServer {
     public setRouter(router: Router): void {
         if (router === undefined) { throw new Error("No router provided"); }
         this.router = router;
-        console.log("SWAAAAAAAAAAAAP", this.router);
     }
 }
-
-////////////////////////////////////////////////////////////
-// Test bits //
-////////////////////////////////////////////////////////////
-
-//  let s = new ApiServer(7777);
-//  s.start().then(() => {
-
-//     let customRouter = Router();
-//     customRouter.post('/bb', (request: Request, response: Response) => {
-//         let testData2 = {
-//             body2: request.body,
-//             firstName: "The",
-//             lastName: "Burge",
-//             path: request.path,
-//             url: request.url,
-//             params: request.params,
-//             query: request.query,
-//             body: request.body
-//         }
-//         console.log('LOOG ', testData2);
-//         response.send(testData2);
-//     });
-
-//     s.swapRouter(customRouter);
-// });

@@ -17,7 +17,7 @@ describe("Router Builder", () => {
         await apiServer.stop();
     });
 
-    this.callPost = (url: string, body, headers: { [name: string]: string }) => {
+    const callPost = (url: string, body, headers?: { [name: string]: string }) => {
         return new Promise<RequestResponse>((resolve, reject) => {
             const options: CoreOptions = {
                 headers,
@@ -30,20 +30,18 @@ describe("Router Builder", () => {
         });
     };
 
-    it("returns request body as default", async () => {
+    it("should return request body as response body by default", async () => {
         apiServer.setRouter(
             new RouteBuilder()
                 .post(),
         );
 
         const defaultBody = { bogus: "api" };
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}`;
-        const result = await callPost(absoluteUrl, defaultBody) as RequestResponse;
+        const result = await callPost(apiServer.url, defaultBody) as RequestResponse;
         assert.deepEqual(result.body, defaultBody);
     });
 
-    it("returns custom body", async () => {
+    it("should return specified response body", async () => {
         const body = { custom: "api" };
 
         apiServer.setRouter(
@@ -52,15 +50,12 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}`;
-
-        const result = await callPost(absoluteUrl, {}) as RequestResponse;
+        const result = await callPost(apiServer.url, {}) as RequestResponse;
 
         assert.deepEqual(result.body, body);
     });
 
-    it("returns fail on responseBody on expected requestBody mismatch", async () => {
+    it("should fail on missing body", async () => {
         const requestBody = { request: "body" };
         const responseBody = { custom: "api" };
 
@@ -71,16 +66,13 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}`;
-
-        const result = await callPost(absoluteUrl, { different: "requestBody" }) as RequestResponse;
+        const result = await callPost(apiServer.url, { different: "requestBody" }) as RequestResponse;
 
         assert.equal(result.statusCode, 404);
         assert.equal(result.statusMessage, "Requested body did not match");
     });
 
-    it("returns ok on responseBody on expected requestBody", async () => {
+    it("should match request body", async () => {
         const requestBody = { request: "body" };
         const responseBody = { custom: "api" };
 
@@ -91,16 +83,13 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}`;
-
-        const result = await callPost(absoluteUrl, requestBody) as RequestResponse;
+        const result = await callPost(apiServer.url, requestBody) as RequestResponse;
 
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);
     });
 
-    it("returns fail on url mismatch", async () => {
+    it("returns fail on missing url", async () => {
         const responseBody = { message: "world" };
 
         apiServer.setRouter(
@@ -109,10 +98,7 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}/badUrl`;
-
-        const result = await callPost(absoluteUrl, { different: "requestBody" }) as RequestResponse;
+        const result = await callPost(`${apiServer.url}/badUrl`, { different: "requestBody" }) as RequestResponse;
 
         assert.equal(result.statusCode, 404);
         assert.equal(result.statusMessage, "Not Found");
@@ -129,10 +115,7 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}${url}`;
-
-        const result = await callPost(absoluteUrl, {}) as RequestResponse;
+        const result = await callPost(`${apiServer.url}${url}`, {}) as RequestResponse;
 
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);
@@ -148,15 +131,13 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const absoluteUrl = `${apiServer.url}`;
-        const callPost = this.callPost as (url: string, body) => Promise<RequestResponse>;
-        const result = await callPost(absoluteUrl, {}) as RequestResponse;
+        const result = await callPost(apiServer.url, {}) as RequestResponse;
 
         assert.equal(result.statusCode, 404);
         assert.equal(result.statusMessage, "Requested header was not found");
     });
 
-    it("should match headers wip", async () => {
+    it("should match headers", async () => {
         const url = "/hello";
         const responseBody = { custom: "api" };
 
@@ -169,10 +150,7 @@ describe("Router Builder", () => {
                 .post(),
         );
 
-        const callPost = this.callPost as (url: string, body, headers) => Promise<any>;
-        const absoluteUrl = `${apiServer.url}${url}`;
-
-        const result = await callPost(absoluteUrl, {}, { h1: "val1", h2: "val2" }) as RequestResponse;
+        const result = await callPost(`${apiServer.url}${url}`, {}, { h1: "val1", h2: "val2" }) as RequestResponse;
 
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);

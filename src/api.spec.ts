@@ -1,9 +1,9 @@
 import { assert } from "chai";
 import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
 
-import { ApiServer, NextFunction, Request, Response, RouteBuilder, Router } from "./api";
+import { ApiServer, RouteBuilder } from "./api";
 
-describe("Api", () => {
+describe("Api Server", () => {
     const apiServer = new ApiServer();
 
     before(async () => {
@@ -14,7 +14,7 @@ describe("Api", () => {
         await apiServer.stop();
     });
 
-    it("succeeds -> should use correct auth headers", async () => {
+    it("should match route url and header", async () => {
         const url = "/heloo";
         const absoluteUrl = `${apiServer.url}${url}`;
         const username = "Batman";
