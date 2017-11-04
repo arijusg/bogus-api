@@ -1,7 +1,10 @@
-# Bogus Api
-Api mocking framework for tests
+# Bogus Api 
+[![Build Status](https://travis-ci.org/arijusg/bogus-api.svg?branch=master)](https://travis-ci.org/arijusg/bogus-api) 
+[![Quality Gate on SonarCloud](https://sonarcloud.io/api/badges/gate?key=bogus-api)](https://sonarcloud.io/dashboard/index/bogus-api) 
+[![Coverage](https://sonarcloud.io/api/badges/measure?key=bogus-api&metric=coverage)](https://sonarcloud.io/component_measures/domain/Coverage?id=bogus-api) 
+[![npm version](https://badge.fury.io/js/%40arijusg%2Fbogus-api.svg)](https://badge.fury.io/js/%40arijusg%2Fbogus-api)
 
-[![Build Status](https://travis-ci.org/arijusg/bogus-api.svg?branch=master)](https://travis-ci.org/arijusg/bogus-api)
+Api mocking framework for tests
 
 Setup spec:
 ```
