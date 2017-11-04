@@ -1,22 +1,24 @@
 # Bogus Api
-Mock api for tests
+Api mocking framework for tests
 
 Setup spec:
 ```
-const apiServer = new ApiServer();
+import { BogusApiServer, RouteBuilder } from '@arijusg/bogus-api';
+
+const bogus = new BogusApiServer();
 
 before(async () => {
-    await apiServer.start();
+    await bogus.start();
 });
 
 after(async () => {
-    await apiServer.stop();
+    await bogus.stop();
 });
 ```
 
 Set a new route:
 ```
-apiServer.setRouter(
+bogus.setRouter(
     new RouteBuilder()
         .withUrl('/my-super-url')
         .withHeader({ key: "authorization", value: authHeader })
@@ -27,37 +29,37 @@ apiServer.setRouter(
 
 Base url:
 ```
-apiServer.url
+bogus.url
 ```
 
 Full example:
 ```
 import { assert } from "chai";
 import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
-import { ApiServer, RouteBuilder } from "bogus-api";
+import { BogusApiServer, RouteBuilder } from "bogus-api";
 
 describe("My Awesome project", () => {
 
-    const apiServer = new ApiServer();
+    const bogus = new BogusApiServer();
 
     before(async () => {
-        await apiServer.start();
+        await bogus.start();
     });
 
     after(async () => {
-        await apiServer.stop();
+        await bogus.stop();
     });
 
     it("should match route url and header", async () => {
         const url = "/heloo";
-        const absoluteUrl = `${apiServer.url}${url}`;
+        const absoluteUrl = `${bogus.url}${url}`;
         const username = "Batman";
         const password = "Superman stinks";
         const authType = "Basic";
         const authHeader = `${authType} ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
         // Bogus Api
-        apiServer.setRouter(
+        bogus.setRouter(
             new RouteBuilder()
                 .withUrl(url)
                 .withHeader({ key: "authorization", value: authHeader })

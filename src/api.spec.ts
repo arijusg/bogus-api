@@ -1,10 +1,10 @@
 import { assert } from "chai";
 import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
 
-import { ApiServer, RouteBuilder } from "./api";
+import { BogusApiServer, RouteBuilder } from "./api";
 
 describe("Api Server", () => {
-    const apiServer = new ApiServer();
+    const apiServer = new BogusApiServer();
 
     before(async () => {
         await apiServer.start();

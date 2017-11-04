@@ -3,11 +3,11 @@ import { assert } from "chai";
 import { RouteBuilder } from "./route-builder";
 
 import { CoreOptions, get, post, put, RequestCallback, RequestResponse } from "request";
-import { ApiServer } from "./api";
+import { BogusApiServer } from "./api";
 
 describe("Router Builder", () => {
 
-    const apiServer = new ApiServer();
+    const apiServer = new BogusApiServer();
 
     before(async () => {
         await apiServer.start();

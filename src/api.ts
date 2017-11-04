@@ -6,7 +6,7 @@ import * as jsonServer from "json-server";
 
 import { RouteBuilder } from "./route-builder";
 
-export class ApiServer {
+export class BogusApiServer {
 
     public get url(): string { return this.baseUrl; }
     private baseUrl: string;
@@ -53,7 +53,7 @@ export class ApiServer {
             this.serverInstance = this.listener.listen(p, () => {
                 process.title = this.serverInstanceTitle;
                 this.setBaseUrl();
-                console.log(`JSON Server is running :: ${this.baseUrl}`);
+                console.log(`Bogus JSON Server is running :: ${this.baseUrl}`);
                 resolve();
             });
         });
@@ -72,7 +72,7 @@ export class ApiServer {
 
         const s = spawn(cmd, params, { stdio: "inherit" });
         s.on("close", (code) => {
-            console.log(`JSON Server is down :: ${this.baseUrl}`);
+            console.log(`Bogus JSON Server is down :: ${this.baseUrl}`);
             return Promise.resolve();
         });
     }

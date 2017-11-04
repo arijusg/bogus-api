@@ -1,14 +1,20 @@
 {
   "name": "@arijusg/bogus-api",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "description": "Api mocking framework",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "private": false,
   "keywords": [
     "test",
     "api"
   ],
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepublish": "npm run build",
     "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
     "test-dev": "TS_NODE_CACHE='false' mocha -w",

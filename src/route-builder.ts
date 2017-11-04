@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { ApiServer } from "./api";
+import { BogusApiServer } from "./api";
 
 export class RouteBuilder {
     private url: string = "";
