@@ -8,13 +8,14 @@
     "test": "TS_NODE_CACHE='false' mocha",
     "test-dev": "TS_NODE_CACHE='false' mocha -w",
     "test-dev-wip": "TS_NODE_CACHE='false' mocha -w --grep 'wip'",
-    "pre-commit": "echo precommit"
+    "pre-commit": "ts-node scripts/precommit.ts"    
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "4.0.4",
     "@types/mocha": "2.2.44",
+    "@types/node": "8.0.47",
     "chai": "4.1.2",
     "mocha": "4.0.1",
     "pre-commit": "1.2.2",
@@ -22,8 +23,7 @@
     "tslint": "5.8.0",
     "tslint-sonarts": "1.1.1",
     "typescript": "2.6.1"
-  }
-  ,
+  },
   "pre-commit": [
     "pre-commit"
   ]
