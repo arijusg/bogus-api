@@ -12,7 +12,7 @@ import { ApiServer, NextFunction, Request, Response, Router } from "./api";
 // .withUrl(url)
 // .withPost() //Last one so canno be chained
 
-describe("Router Builder wip", () => {
+describe("Router Builder", () => {
     before(async () => {
         this.apiServer = new ApiServer();
         await this.apiServer.start();
@@ -100,4 +100,42 @@ describe("Router Builder wip", () => {
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);
     });
+
+    it("returns fail on url mismatch", async () => {
+        const responseBody = { message: "world" };
+        const builder = new RouteBuilder();
+        const route = builder
+            .withResponseBody(responseBody)
+            .post();
+        this.apiServer.swapRouter(route);
+
+        const callPost = this.callPost as (url: string, body) => Promise<any>;
+        const absoluteUrl = `${this.apiServer.baseUrl}/badUrl`;
+
+        const result = await callPost(absoluteUrl, { different: "requestBody" }) as RequestResponse;
+
+        assert.equal(result.statusCode, 404);
+        assert.equal(result.statusMessage, "Not Found");
+    });
+
+    it("should match url", async () => {
+        const url = "/hello";
+        const responseBody = { custom: "api" };
+
+        const builder = new RouteBuilder();
+        const route = builder
+            .withUrl(url)
+            .withResponseBody(responseBody)
+            .post();
+        this.apiServer.swapRouter(route);
+
+        const callPost = this.callPost as (url: string, body) => Promise<any>;
+        const absoluteUrl = `${this.apiServer.baseUrl}${url}`;
+
+        const result = await callPost(absoluteUrl, {}) as RequestResponse;
+
+        assert.equal(result.statusCode, 200);
+        assert.deepEqual(result.body, responseBody);
+    });
+
 });

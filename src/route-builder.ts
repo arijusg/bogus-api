@@ -5,6 +5,11 @@ export class RouteBuilder {
     private responseBody: object;
     private requestBody: object;
 
+    public withUrl(url: string) {
+        this.url = url;
+        return this;
+    }
+
     public withRequestBody(body: object) {
         this.requestBody = body;
         return this;
