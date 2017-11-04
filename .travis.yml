@@ -8,6 +8,7 @@ script:
 - npm i -g typescript
 - npm run test
 - npm run sonar
+- npm run build
 cache:
   directories:
   - "$HOME/.sonar/cache"
