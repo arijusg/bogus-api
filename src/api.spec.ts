@@ -1,10 +1,10 @@
 import { assert } from "chai";
 import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
 
-import { ApiServer, NextFunction, Request, Response, Router, RouteBuilder } from "./api";
+import { ApiServer, NextFunction, Request, Response, RouteBuilder, Router } from "./api";
 
 describe("Api", () => {
-    let apiServer = new ApiServer();
+    const apiServer = new ApiServer();
 
     before(async () => {
         await apiServer.start();
@@ -27,7 +27,7 @@ describe("Api", () => {
                 .withUrl(url)
                 .withHeader({ key: "authorization", value: authHeader })
                 .withResponseBody({ hello: "me" })
-                .post()
+                .post(),
         );
 
         // Client

@@ -4,8 +4,8 @@ export { Router, Request, Response, NextFunction } from "express";
 
 import { Express, NextFunction, Request, Response, Router } from "express";
 
-import { RouteBuilder } from './route-builder';
-export { RouteBuilder } from './route-builder';
+import { RouteBuilder } from "./route-builder";
+export { RouteBuilder } from "./route-builder";
 
 export class ApiServer {
 
@@ -81,7 +81,7 @@ export class ApiServer {
     public setRouter(router: Router): void {
         if (router === undefined) { throw new Error("No router provided"); }
         this.router = router;
-        console.log('SWAAAAAAAAAAAAP', this.router);
+        console.log("SWAAAAAAAAAAAAP", this.router);
     }
 }
 

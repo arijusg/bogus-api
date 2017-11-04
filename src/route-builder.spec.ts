@@ -7,7 +7,7 @@ import { ApiServer } from "./api";
 
 describe("Router Builder", () => {
 
-    let apiServer = new ApiServer();
+    const apiServer = new ApiServer();
 
     before(async () => {
         await apiServer.start();
@@ -33,7 +33,7 @@ describe("Router Builder", () => {
     it("returns request body as default", async () => {
         apiServer.setRouter(
             new RouteBuilder()
-                .post()
+                .post(),
         );
 
         const defaultBody = { bogus: "api" };
@@ -49,7 +49,7 @@ describe("Router Builder", () => {
         apiServer.setRouter(
             new RouteBuilder()
                 .withResponseBody(body)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body) => Promise<any>;
@@ -68,7 +68,7 @@ describe("Router Builder", () => {
             new RouteBuilder()
                 .withRequestBody(requestBody)
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body) => Promise<any>;
@@ -88,7 +88,7 @@ describe("Router Builder", () => {
             new RouteBuilder()
                 .withRequestBody(requestBody)
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body) => Promise<any>;
@@ -106,7 +106,7 @@ describe("Router Builder", () => {
         apiServer.setRouter(
             new RouteBuilder()
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body) => Promise<any>;
@@ -126,7 +126,7 @@ describe("Router Builder", () => {
             new RouteBuilder()
                 .withUrl(url)
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body) => Promise<any>;
@@ -145,7 +145,7 @@ describe("Router Builder", () => {
             new RouteBuilder()
                 .withHeader({ key: "header", value: "headerValue" })
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const absoluteUrl = `${apiServer.url}`;
@@ -166,7 +166,7 @@ describe("Router Builder", () => {
                 .withHeader({ key: "h1", value: "val1" })
                 .withHeader({ key: "h2", value: "val2" })
                 .withResponseBody(responseBody)
-                .post()
+                .post(),
         );
 
         const callPost = this.callPost as (url: string, body, headers) => Promise<any>;

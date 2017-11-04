@@ -29,13 +29,13 @@ export class RouteBuilder {
     private isResponseSent = false;
 
     private responseSend(response: Response, body?: any) {
-        if (this.isResponseSent) return;
+        if (this.isResponseSent) { return; }
         response.send(404);
         this.isResponseSent = true;
     }
 
     private responseJson(response: Response, body: any) {
-        if (this.isResponseSent) return;
+        if (this.isResponseSent) { return; }
         response.json(body);
         this.isResponseSent = true;
     }
@@ -82,8 +82,9 @@ export class RouteBuilder {
                     this.responseJson(response, this.responseBody);
                 }
 
-                if (!this.isResponseSent)
+                if (!this.isResponseSent) {
                     next();
+                }
             });
     }
 }
