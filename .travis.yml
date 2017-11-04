@@ -5,6 +5,7 @@ jdk:
 - oraclejdk8
 dist: trusty
 script:
+- npm run test
 - npm run sonar
 cache:
   directories:
