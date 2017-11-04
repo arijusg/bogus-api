@@ -1,8 +1,8 @@
 export { RouteBuilder } from "./route-builder";
 
 import { spawn } from "child_process";
-import * as jsonServer from "json-server";
 import { Express, NextFunction, Request, Response, Router } from "express";
+import * as jsonServer from "json-server";
 
 import { RouteBuilder } from "./route-builder";
 
