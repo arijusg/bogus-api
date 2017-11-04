@@ -4,8 +4,6 @@ node_js:
 jdk:
 - oraclejdk8
 dist: trusty
-before_install:
-- npm install -g typescript
 script:
 - npm run test
 - npm run sonar

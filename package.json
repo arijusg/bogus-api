@@ -13,8 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && npm i && tsc",
-    "prepublish2": "npm run build",
+    "build": "rm -rf dist && tsc",
     "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
     "test-dev": "TS_NODE_CACHE='false' mocha -w",
@@ -23,7 +22,6 @@
     "sonar": "export CURRENT_VERSION=$(node -p \"require('./package.json').version\") && sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.projectVersion=$CURRENT_VERSION -Dsonar.analysis.buildNumber=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.pipeline=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.sha1=$TRAVIS_COMMIT -Dsonar.analysis.repository=$TRAVIS_REPO_SLUG",
     "sonar-local": "sonar-scanner",
     "preversion": "npm test",
-    "version2": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags && rm -rf build/temp"
   },
   "author": "Arijus Gilbrantas",
@@ -82,7 +80,7 @@
     "cookie-parser": "1.4.3",
     "errorhandler": "1.5.0",
     "express": "4.16.2",
-    "json-server": "^0.12.1",
+    "json-server": "0.12.1",
     "method-override": "2.3.10",
     "morgan": "1.9.0"
   }
