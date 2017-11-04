@@ -1,3 +1,4 @@
-node_modules
+.scannerwork
 .nyc_output
 coverage
+node_modules
