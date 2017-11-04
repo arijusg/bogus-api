@@ -1,9 +1,9 @@
 import { assert } from "chai";
-import { CoreOptions, post, RequestCallback } from "request";
+import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
 
 import { ApiServer, NextFunction, Request, Response, Router } from "./api";
 
-describe("Hello you wip", () => {
+describe("Hello you", () => {
     before(async () => {
         this.apiServer = new ApiServer();
         await this.apiServer.start();
@@ -36,7 +36,7 @@ describe("Hello you wip", () => {
 
         // Client
 
-        const callPost = new Promise<any>((resolve, reject) => {
+        const callPost = new Promise<RequestResponse>((resolve, reject) => {
             const options: CoreOptions = {
                 auth: {
                     password,
@@ -47,17 +47,12 @@ describe("Hello you wip", () => {
             };
 
             post(absoluteUrl, options, (error, response, body) => {
-                if (!error && response.statusCode === 200) {
-                    resolve(body);
-                } else {
-                    const msg = `Status Code: ${response.statusCode}, message: ${response.body}, error: ${error}`;
-                    reject(msg);
-                }
+                resolve(response);
             });
         });
 
-        const result = await callPost;
+        const result = await callPost as RequestResponse;
 
-        assert.deepEqual(result, { hello: "me" });
+        assert.deepEqual(result.body, { hello: "me" });
     });
 });
