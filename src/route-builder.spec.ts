@@ -2,7 +2,7 @@ import { assert } from "chai";
 
 import { RouteBuilder } from "./route-builder";
 
-import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
+import { CoreOptions, get, post, put, RequestCallback, RequestResponse } from "request";
 import { ApiServer } from "./api";
 
 describe("Router Builder", () => {
@@ -30,6 +30,32 @@ describe("Router Builder", () => {
         });
     };
 
+    const callPut = (url: string, body, headers?: { [name: string]: string }) => {
+        return new Promise<RequestResponse>((resolve, reject) => {
+            const options: CoreOptions = {
+                headers,
+                json: body,
+            };
+
+            put(url, options, (error, response) => {
+                resolve(response);
+            });
+        });
+    };
+
+    const callGet = (url: string, headers?: { [name: string]: string }) => {
+        return new Promise<RequestResponse>((resolve, reject) => {
+            const options: CoreOptions = {
+                headers,
+                json: {},
+            };
+
+            get(url, options, (error, response, body) => {
+                resolve(response);
+            });
+        });
+    };
+
     it("should return request body as response body by default", async () => {
         apiServer.setRouter(
             new RouteBuilder()
@@ -51,6 +77,37 @@ describe("Router Builder", () => {
         );
 
         const result = await callPost(apiServer.url, {}) as RequestResponse;
+
+        assert.deepEqual(result.body, body);
+    });
+
+    it("should return specified response body for get", async function() {
+        this.timeout(30000);
+
+        const body = { custom: "api" };
+        const url = "/haha";
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withUrl(url)
+                .withResponseBody(body)
+                .get(),
+        );
+
+        const result = await callGet(`${apiServer.url}${url}`) as RequestResponse;
+
+        assert.deepEqual(result.body, body);
+    });
+
+    it("should return specified response body for put", async () => {
+        const body = { custom: "api" };
+
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withResponseBody(body)
+                .put(),
+        );
+
+        const result = await callPut(apiServer.url, {}) as RequestResponse;
 
         assert.deepEqual(result.body, body);
     });

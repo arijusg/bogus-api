@@ -32,6 +32,22 @@ export class RouteBuilder {
         this.responseStatusCode = statusCocde;
         return this;
     }
+
+    public post(): Router {
+        return Router()
+            .post(this.url, this.routerInternals);
+    }
+
+    public get(): Router {
+        return Router()
+            .get(this.url, this.routerInternals);
+    }
+
+    public put(): Router {
+        return Router()
+            .put(this.url, this.routerInternals);
+    }
+
     private isResponseSent = false;
 
     private responseSend(response: Response, body?: any) {
@@ -46,50 +62,48 @@ export class RouteBuilder {
         this.isResponseSent = true;
     }
 
-    public post(): Router {
-        return Router()
-            .post(this.url, (request: Request, response: Response, next: NextFunction) => {
-                const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
-                const actualBody = JSON.stringify(this.requestBody);
+    private routerInternals = (request: Request, response: Response, next: NextFunction) => {
+        const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
+        const actualBody = JSON.stringify(this.requestBody);
 
-                if (!this.isResponseSent && this.requestedHeaders.length > 0) {
-                    this.requestedHeaders.forEach((requestedHeader) => {
+        if (!this.isResponseSent && this.requestedHeaders.length > 0) {
+            this.requestedHeaders.forEach((requestedHeader) => {
 
-                        const actualHeaderValue = request.headers[requestedHeader.key];
-                        if (actualHeaderValue !== requestedHeader.value) {
-                            const msg = "Requested header was not found";
-                            console.error(msg);
-                            console.log(`Expected: ${actualHeaderValue}`);
-                            console.log(`Actual:   ${requestedHeader.value}`);
-                            console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
-                            response.statusMessage = msg;
-
-                            this.responseSend(response, 404);
-                        }
-                    });
-                }
-
-                if (!this.isResponseSent && this.requestBody && expectedBody !== actualBody) {
-                    const msg = "Requested body did not match";
+                const actualHeaderValue = request.headers[requestedHeader.key];
+                if (actualHeaderValue !== requestedHeader.value) {
+                    const msg = "Requested header was not found";
                     console.error(msg);
-                    console.log(`Expected: ${expectedBody}`);
-                    console.log(`Actual:   ${actualBody}`);
-                    console.log(`Match:   ${expectedBody === actualBody}`);
-
+                    console.log(`Expected: ${actualHeaderValue}`);
+                    console.log(`Actual:   ${requestedHeader.value}`);
+                    console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
                     response.statusMessage = msg;
+
                     this.responseSend(response, 404);
                 }
-
-                if (!this.isResponseSent && !this.responseBody) {
-                    if (this.responseStatusCode) {
-                        response.statusCode = this.responseStatusCode;
-                    }
-                    this.responseJson(response, request.body);
-                }
-
-                if (!this.isResponseSent) {
-                    this.responseJson(response, this.responseBody);
-                }
             });
+        }
+
+        if (!this.isResponseSent && this.requestBody && expectedBody !== actualBody) {
+            const msg = "Requested body did not match";
+            console.error(msg);
+            console.log(`Expected: ${expectedBody}`);
+            console.log(`Actual:   ${actualBody}`);
+            console.log(`Match:   ${expectedBody === actualBody}`);
+
+            response.statusMessage = msg;
+            this.responseSend(response, 404);
+        }
+
+        if (!this.isResponseSent && !this.responseBody) {
+            if (this.responseStatusCode) {
+                response.statusCode = this.responseStatusCode;
+            }
+
+            this.responseJson(response, request.body);
+        }
+
+        if (!this.isResponseSent) {
+            this.responseJson(response, this.responseBody);
+        }
     }
 }
