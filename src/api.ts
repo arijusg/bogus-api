@@ -16,7 +16,7 @@ export class BogusApiServer {
     private serverInstance: any;
     private serverInstanceTitle: string;
 
-    constructor(private port?: number) {
+    constructor() {
         this.serverInstanceTitle = this.generateRandomString();
         this.resetStupidAegonBambooBreakingStuff();
     }
@@ -48,9 +48,7 @@ export class BogusApiServer {
                 this.router(request, response, next);
             });
 
-            const p = this.port === undefined ? 0 : this.port;
-
-            this.serverInstance = this.listener.listen(p, () => {
+            this.serverInstance = this.listener.listen(0, () => {
                 process.title = this.serverInstanceTitle;
                 this.setBaseUrl();
                 console.log(`Bogus JSON Server is running :: ${this.baseUrl}`);
@@ -78,7 +76,7 @@ export class BogusApiServer {
     }
 
     public setRouter(router: Router): void {
-        if (router === undefined) { throw new Error("No router provided"); }
+        if (router == null) { throw new Error("No router provided"); }
         this.router = router;
     }
 }

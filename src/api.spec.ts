@@ -50,4 +50,10 @@ describe("Api Server", () => {
 
         assert.deepEqual(result.body, { hello: "me" });
     });
+
+    it("should throw if router not provided", () => {
+        assert.throws(() => {
+            apiServer.setRouter(null as any);
+        }, "No router provided");
+    });
 });
