@@ -2,5 +2,9 @@
     "extends": [
         "tslint:recommended",
         "tslint-sonarts"
-    ]
+    ],
+    "rules" : {
+        "no-console": [false],
+        "member-ordering": [false]
+    }
 }
