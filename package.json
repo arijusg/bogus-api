@@ -1,6 +1,6 @@
 {
   "name": "@arijusg/bogus-api",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Api mocking framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && node_modules/.bin/tsc",
     "prepublish": "npm run build",
     "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
@@ -21,7 +21,10 @@
     "test-dev-wip": "TS_NODE_CACHE='false' _mocha -w --grep 'wip'",
     "pre-commit": "ts-node scripts/precommit.ts",
     "sonar": "export CURRENT_VERSION=$(node -p \"require('./package.json').version\") && sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.projectVersion=$CURRENT_VERSION -Dsonar.analysis.buildNumber=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.pipeline=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.sha1=$TRAVIS_COMMIT -Dsonar.analysis.repository=$TRAVIS_REPO_SLUG",
-    "sonar-local": "sonar-scanner"
+    "sonar-local": "sonar-scanner",
+    "preversion": "npm test",
+    "version2": "npm run build && git add -A dist",
+    "postversion": "git push && git push --tags && rm -rf build/temp"
   },
   "author": "Arijus Gilbrantas",
   "license": "MIT",
