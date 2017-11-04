@@ -4,6 +4,12 @@ export class RouteBuilder {
     private url: string = "";
     private responseBody: object;
     private requestBody: object;
+    private requestedHeaders: Array<{ key: string, value: string }> = [];
+
+    public withHeader(header: { key: string, value: string }) {
+        this.requestedHeaders.push(header);
+        return this;
+    }
 
     public withUrl(url: string) {
         this.url = url;
@@ -27,9 +33,27 @@ export class RouteBuilder {
                 const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
                 const actualBody = JSON.stringify(this.requestBody);
 
-                if (!this.responseBody) {
-                    response.json(request.body);
-                } else if (this.requestBody && expectedBody !== actualBody) {
+                let isResponseSent = false;
+
+                if (!isResponseSent && this.requestedHeaders.length > 0) {
+                    this.requestedHeaders.forEach((requestedHeader) => {
+
+                        const actualHeaderValue = request.headers[requestedHeader.key];
+                        if (actualHeaderValue !== requestedHeader.value) {
+                            const msg = "Requested header was not found";
+                            console.error(msg);
+                            console.log(`Expected: ${actualHeaderValue}`);
+                            console.log(`Actual:   ${requestedHeader.value}`);
+                            console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
+                            response.statusMessage = msg;
+
+                            isResponseSent = true;
+                            response.send(404);
+                        }
+
+                    });
+                }
+                if (!isResponseSent && this.requestBody && expectedBody !== actualBody) {
                     const msg = "Requested body did not match";
                     console.error(msg);
                     console.log(`Expected: ${expectedBody}`);
@@ -37,8 +61,17 @@ export class RouteBuilder {
                     console.log(`Match:   ${expectedBody === actualBody}`);
 
                     response.statusMessage = msg;
+                    isResponseSent = true;
+
                     response.send(404);
-                } else {
+                }
+
+                if (!isResponseSent && !this.responseBody) {
+                    isResponseSent = true;
+
+                    response.json(request.body);
+                } else if (!isResponseSent) {
+                    isResponseSent = true;
                     response.json(this.responseBody);
                     next();
                 }

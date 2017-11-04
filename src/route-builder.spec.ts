@@ -22,9 +22,10 @@ describe("Router Builder", () => {
         await this.apiServer.stop();
     });
 
-    this.callPost = (url: string, body) => {
+    this.callPost = (url: string, body, headers: {[name: string]: string}) => {
         return new Promise<RequestResponse>((resolve, reject) => {
             const options: CoreOptions = {
+                headers,
                 json: body,
             };
 
@@ -133,6 +134,46 @@ describe("Router Builder", () => {
         const absoluteUrl = `${this.apiServer.baseUrl}${url}`;
 
         const result = await callPost(absoluteUrl, {}) as RequestResponse;
+
+        assert.equal(result.statusCode, 200);
+        assert.deepEqual(result.body, responseBody);
+    });
+
+    it("should fail on missing header", async () => {
+        const responseBody = { custom: "api" };
+
+        const builder = new RouteBuilder();
+        const route = builder
+            .withHeader({ key: "header", value: "headerValue" })
+            .withResponseBody(responseBody)
+            .post();
+        this.apiServer.swapRouter(route);
+
+        const absoluteUrl = `${this.apiServer.baseUrl}`;
+        const callPost = this.callPost as (url: string, body) => Promise<RequestResponse>;
+        const result = await callPost(absoluteUrl, {}) as RequestResponse;
+
+        assert.equal(result.statusCode, 404);
+        assert.equal(result.statusMessage, "Requested header was not found");
+    });
+
+    it("should match headers wip", async () => {
+        const url = "/hello";
+        const responseBody = { custom: "api" };
+
+        const builder = new RouteBuilder();
+        const route = builder
+            .withUrl(url)
+            .withHeader({key: "h1", value: "val1"})
+            .withHeader({key: "h2", value: "val2"})
+            .withResponseBody(responseBody)
+            .post();
+        this.apiServer.swapRouter(route);
+
+        const callPost = this.callPost as (url: string, body, headers) => Promise<any>;
+        const absoluteUrl = `${this.apiServer.baseUrl}${url}`;
+
+        const result = await callPost(absoluteUrl, {}, {h1: "val1", h2: "val2"}) as RequestResponse;
 
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);
