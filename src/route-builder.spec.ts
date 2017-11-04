@@ -55,6 +55,19 @@ describe("Router Builder", () => {
         assert.deepEqual(result.body, body);
     });
 
+    it("should return specified response status code", async () => {
+        const responseStatusCode = 204;
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withResponseStatusCode(responseStatusCode)
+                .post(),
+        );
+
+        const result = await callPost(apiServer.url, {}) as RequestResponse;
+
+        assert.equal(result.statusCode, responseStatusCode);
+    });
+
     it("should fail on missing body", async () => {
         const requestBody = { request: "body" };
         const responseBody = { custom: "api" };

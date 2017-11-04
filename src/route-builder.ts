@@ -4,6 +4,7 @@ import { ApiServer } from "./api";
 export class RouteBuilder {
     private url: string = "";
     private responseBody: object;
+    private responseStatusCode: number;
     private requestBody: object;
     private requestedHeaders: Array<{ key: string, value: string }> = [];
 
@@ -27,6 +28,10 @@ export class RouteBuilder {
         return this;
     }
 
+    public withResponseStatusCode(statusCocde: number) {
+        this.responseStatusCode = statusCocde;
+        return this;
+    }
     private isResponseSent = false;
 
     private responseSend(response: Response, body?: any) {
@@ -76,6 +81,9 @@ export class RouteBuilder {
                 }
 
                 if (!this.isResponseSent && !this.responseBody) {
+                    if (this.responseStatusCode) {
+                        response.statusCode = this.responseStatusCode;
+                    }
                     this.responseJson(response, request.body);
                 }
 
