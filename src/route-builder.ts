@@ -39,6 +39,9 @@ export class RouteBuilder {
     }
 
     public get(): Router {
+        if (!this.url) {
+            throw new Error("Get cannot be on the root, need to give an url ;)");
+        }
         return Router()
             .get(this.url, this.routerInternals);
     }
@@ -50,22 +53,15 @@ export class RouteBuilder {
 
     private isResponseSent = false;
 
-    private responseSend(response: Response, body?: any) {
-        if (this.isResponseSent) { return; }
-        response.send(404);
-        this.isResponseSent = true;
-    }
-
-    private responseJson(response: Response, body: any) {
-        if (this.isResponseSent) { return; }
-        response.json(body);
-        this.isResponseSent = true;
-    }
-
     private routerInternals = (request: Request, response: Response, next: NextFunction) => {
-        const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
-        const actualBody = JSON.stringify(this.requestBody);
+        this.processHeaders(request, response);
+        this.processBody(request, response);
+        this.setResponseStatusCode(response);
+        this.processResponseBody(response);
+        this.processDefaultResponse(request, response);
+    }
 
+    private processHeaders(request: Request, response: Response): void {
         if (!this.isResponseSent && this.requestedHeaders.length > 0) {
             this.requestedHeaders.forEach((requestedHeader) => {
 
@@ -78,10 +74,15 @@ export class RouteBuilder {
                     console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
                     response.statusMessage = msg;
 
-                    this.responseSend(response, 404);
+                    this.responseSendError(response, 500);
                 }
             });
         }
+    }
+
+    private processBody(request: Request, response: Response) {
+        const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
+        const actualBody = JSON.stringify(this.requestBody);
 
         if (!this.isResponseSent && this.requestBody && expectedBody !== actualBody) {
             const msg = "Requested body did not match";
@@ -91,19 +92,35 @@ export class RouteBuilder {
             console.log(`Match:   ${expectedBody === actualBody}`);
 
             response.statusMessage = msg;
-            this.responseSend(response, 404);
+            this.responseSendError(response, 500);
         }
+    }
 
-        if (!this.isResponseSent && !this.responseBody) {
-            if (this.responseStatusCode) {
-                response.statusCode = this.responseStatusCode;
-            }
-
-            this.responseJson(response, request.body);
+    private setResponseStatusCode(response: Response) {
+        if (this.responseStatusCode) {
+            response.statusCode = this.responseStatusCode;
         }
+    }
 
-        if (!this.isResponseSent) {
+    private processResponseBody(response: Response) {
+        if (!this.isResponseSent && this.responseBody) {
             this.responseJson(response, this.responseBody);
         }
+    }
+
+    private processDefaultResponse(request: Request, response: Response) {
+        if (!this.isResponseSent && !this.responseBody) {
+            this.responseJson(response, request.body);
+        }
+    }
+
+    private responseSendError(response: Response, body?: any) {
+        response.send(body);
+        this.isResponseSent = true;
+    }
+
+    private responseJson(response: Response, body: any) {
+        response.json(body);
+        this.isResponseSent = true;
     }
 }
