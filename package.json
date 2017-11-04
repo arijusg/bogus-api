@@ -20,7 +20,8 @@
     "test-dev": "TS_NODE_CACHE='false' mocha -w",
     "test-dev-wip": "TS_NODE_CACHE='false' _mocha -w --grep 'wip'",
     "pre-commit": "ts-node scripts/precommit.ts",
-    "sonar": "sonar-scanner"
+    "sonar": "export CURRENT_VERSION=$(node -p \"require('./package.json').version\") && sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.projectVersion=$CURRENT_VERSION -Dsonar.analysis.buildNumber=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.pipeline=$TRAVIS_BUILD_NUMBER -Dsonar.analysis.sha1=$TRAVIS_COMMIT -Dsonar.analysis.repository=$TRAVIS_REPO_SLUG",
+    "sonar-local": "sonar-scanner"
   },
   "author": "Arijus Gilbrantas",
   "license": "MIT",
