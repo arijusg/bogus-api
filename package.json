@@ -13,7 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && ls && npm i && tsc",
     "prepublish": "npm run build",
     "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
