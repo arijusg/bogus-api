@@ -1,41 +1,36 @@
 import { assert } from "chai";
 import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
 
-import { ApiServer, NextFunction, Request, Response, Router } from "./api";
+import { ApiServer, NextFunction, Request, Response, Router, RouteBuilder } from "./api";
 
-describe("Hello you", () => {
+describe("Api", () => {
+    let apiServer = new ApiServer();
+
     before(async () => {
-        this.apiServer = new ApiServer();
-        await this.apiServer.start();
+        await apiServer.start();
     });
 
     after(async () => {
-        await this.apiServer.stop();
+        await apiServer.stop();
     });
 
     it("succeeds -> should use correct auth headers", async () => {
         const url = "/heloo";
-        const absoluteUrl = `${this.apiServer.baseUrl}${url}`;
+        const absoluteUrl = `${apiServer.url}${url}`;
         const username = "Batman";
         const password = "Superman stinks";
         const authType = "Basic";
         const authHeader = `${authType} ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
-        const customRouter = Router()
-            .post(url, (request: Request, response: Response, next: NextFunction) => {
-                const expectedAuthHeader = authHeader;
-                const actualAuthHeader = request.headers.authorization;
-
-                if (expectedAuthHeader === actualAuthHeader) {
-                    response.json({ hello: "me" });
-                }
-                next();
-            });
-
-        this.apiServer.swapRouter(customRouter);
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withUrl(url)
+                .withHeader({ key: "authorization", value: authHeader })
+                .withResponseBody({ hello: "me" })
+                .post()
+        );
 
         // Client
-
         const callPost = new Promise<RequestResponse>((resolve, reject) => {
             const options: CoreOptions = {
                 auth: {

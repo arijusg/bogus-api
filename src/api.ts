@@ -4,6 +4,9 @@ export { Router, Request, Response, NextFunction } from "express";
 
 import { Express, NextFunction, Request, Response, Router } from "express";
 
+import { RouteBuilder } from './route-builder';
+export { RouteBuilder } from './route-builder';
+
 export class ApiServer {
 
     public get url(): string { return this.baseUrl; }
@@ -75,9 +78,10 @@ export class ApiServer {
         });
     }
 
-    public swapRouter(router: Router): void {
+    public setRouter(router: Router): void {
         if (router === undefined) { throw new Error("No router provided"); }
         this.router = router;
+        console.log('SWAAAAAAAAAAAAP', this.router);
     }
 }
 

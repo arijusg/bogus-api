@@ -26,16 +26,27 @@ export class RouteBuilder {
         return this;
     }
 
-    public post(): any {
+    private isResponseSent = false;
 
-        const customRouter = Router()
+    private responseSend(response: Response, body?: any) {
+        if (this.isResponseSent) return;
+        response.send(404);
+        this.isResponseSent = true;
+    }
+
+    private responseJson(response: Response, body: any) {
+        if (this.isResponseSent) return;
+        response.json(body);
+        this.isResponseSent = true;
+    }
+
+    public post(): Router {
+        return Router()
             .post(this.url, (request: Request, response: Response, next: NextFunction) => {
                 const expectedBody = this.requestBody ? JSON.stringify(request.body) : "";
                 const actualBody = JSON.stringify(this.requestBody);
 
-                let isResponseSent = false;
-
-                if (!isResponseSent && this.requestedHeaders.length > 0) {
+                if (!this.isResponseSent && this.requestedHeaders.length > 0) {
                     this.requestedHeaders.forEach((requestedHeader) => {
 
                         const actualHeaderValue = request.headers[requestedHeader.key];
@@ -47,13 +58,12 @@ export class RouteBuilder {
                             console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
                             response.statusMessage = msg;
 
-                            isResponseSent = true;
-                            response.send(404);
+                            this.responseSend(response, 404);
                         }
-
                     });
                 }
-                if (!isResponseSent && this.requestBody && expectedBody !== actualBody) {
+
+                if (!this.isResponseSent && this.requestBody && expectedBody !== actualBody) {
                     const msg = "Requested body did not match";
                     console.error(msg);
                     console.log(`Expected: ${expectedBody}`);
@@ -61,21 +71,19 @@ export class RouteBuilder {
                     console.log(`Match:   ${expectedBody === actualBody}`);
 
                     response.statusMessage = msg;
-                    isResponseSent = true;
-
-                    response.send(404);
+                    this.responseSend(response, 404);
                 }
 
-                if (!isResponseSent && !this.responseBody) {
-                    isResponseSent = true;
+                if (!this.isResponseSent && !this.responseBody) {
+                    this.responseJson(response, request.body);
+                }
 
-                    response.json(request.body);
-                } else if (!isResponseSent) {
-                    isResponseSent = true;
-                    response.json(this.responseBody);
+                if (!this.isResponseSent) {
+                    this.responseJson(response, this.responseBody);
+                }
+
+                if (!this.isResponseSent)
                     next();
-                }
             });
-        return customRouter;
     }
 }
