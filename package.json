@@ -4,6 +4,10 @@
   "description": "Api mocking framework",
   "main": "index.ts",
   "private": false,
+  "keywords": [
+    "test",
+    "api"
+  ],
   "scripts": {
     "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
