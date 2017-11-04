@@ -1,6 +1,8 @@
 # Bogus Api
 Api mocking framework for tests
 
+[![Build Status](https://travis-ci.org/arijusg/bogus-api.svg?branch=master)](https://travis-ci.org/arijusg/bogus-api)
+
 Setup spec:
 ```
 import { BogusApiServer, RouteBuilder } from '@arijusg/bogus-api';
