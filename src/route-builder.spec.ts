@@ -69,7 +69,6 @@ describe("Router Builder", () => {
 
     it("should return specified response body", async () => {
         const body = { custom: "api" };
-
         apiServer.setRouter(
             new RouteBuilder()
                 .withResponseBody(body)
@@ -243,6 +242,44 @@ describe("Router Builder", () => {
         );
 
         const result = await callPost(`${apiServer.url}${url}`, {}, { h1: "val1", h2: "val2" });
+
+        assert.equal(result.statusCode, 200);
+        assert.deepEqual(result.body, responseBody);
+    });
+
+    it("should fail on missing parameter", async () => {
+        const url = "/hello";
+        const responseBody = { custom: "api" };
+
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withUrl(url)
+                 .withQueryStringParam({ key: "magic", value: "true" })
+                .withQueryStringParam({ key: "fish", value: "green" })
+                .withResponseBody(responseBody)
+                .get(),
+        );
+
+        const result = await callGet(`${apiServer.url}${url}?magic=true&fish=blue`, {});
+
+        assert.equal(result.statusCode, 500);
+        assert.equal(result.statusMessage, "Requested parameter was not found");
+    });
+
+    it("should match query string parameters", async () => {
+        const url = "/hello";
+        const responseBody = { custom: "api" };
+
+        apiServer.setRouter(
+            new RouteBuilder()
+                .withUrl(url)
+                .withQueryStringParam({ key: "you", value: "true" })
+                .withQueryStringParam({ key: "dont", value: "false" })
+                .withResponseBody(responseBody)
+                .get(),
+        );
+
+        const result = await callGet(`${apiServer.url}${url}?you=true&dont=false`, {});
 
         assert.equal(result.statusCode, 200);
         assert.deepEqual(result.body, responseBody);

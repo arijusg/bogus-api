@@ -7,9 +7,15 @@ export class RouteBuilder {
     private responseStatusCode: number;
     private requestBody: object;
     private requestedHeaders: Array<{ key: string, value: string }> = [];
+    private requestedQueryStringParams: Array<{ key: string, value: string }> = [];
 
     public withHeader(header: { key: string, value: string }) {
         this.requestedHeaders.push(header);
+        return this;
+    }
+
+    public withQueryStringParam(param: { key: string, value: string }) {
+        this.requestedQueryStringParams.push(param);
         return this;
     }
 
@@ -55,6 +61,7 @@ export class RouteBuilder {
 
     private routerInternals = (request: Request, response: Response, next: NextFunction) => {
         this.processHeaders(request, response);
+        this.processQueryStringParams(request, response);
         this.processBody(request, response);
         this.setResponseStatusCode(response);
         this.processResponseBody(response);
@@ -72,6 +79,24 @@ export class RouteBuilder {
                     console.log(`Expected: ${actualHeaderValue}`);
                     console.log(`Actual:   ${requestedHeader.value}`);
                     console.log(`Match:   ${actualHeaderValue === requestedHeader.value}`);
+                    response.statusMessage = msg;
+
+                    this.responseSendError(response, 500);
+                }
+            });
+        }
+    }
+
+    private processQueryStringParams(request: Request, response: Response): void {
+        if (!this.isResponseSent && this.requestedQueryStringParams.length > 0) {
+            this.requestedQueryStringParams.forEach((requestedParam) => {
+                const actualParamValue = request.query[requestedParam.key];
+                if (actualParamValue !== requestedParam.value) {
+                    const msg = "Requested parameter was not found";
+                    console.error(msg);
+                    console.log(`Expected: ${actualParamValue}`);
+                    console.log(`Actual:   ${requestedParam.value}`);
+                    console.log(`Match:   ${actualParamValue === requestedParam.value}`);
                     response.statusMessage = msg;
 
                     this.responseSendError(response, 500);
