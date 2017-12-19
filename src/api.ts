@@ -18,14 +18,14 @@ export class BogusApiServer {
 
     constructor() {
         this.serverInstanceTitle = this.generateRandomString();
-        this.resetStupidAegonBambooBreakingStuff();
+        this.resetStupidBambooBreakingStuff();
     }
 
     private generateRandomString(): string {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
-    private resetStupidAegonBambooBreakingStuff() {
+    private resetStupidBambooBreakingStuff() {
         process.env.HTTPS_PROXY = "";
         process.env.HTTP_PROXY = "";
     }
