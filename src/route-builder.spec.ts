@@ -5,6 +5,7 @@ import { RouteBuilder } from "./route-builder";
 import { CoreOptions, get, post, put, RequestCallback, RequestResponse } from "request";
 import { BogusApiServer } from "./api";
 
+// tslint:disable-next-line:no-big-function
 describe("Router Builder", () => {
 
     const apiServer = new BogusApiServer();
@@ -80,9 +81,7 @@ describe("Router Builder", () => {
         assert.deepEqual(result.body, body);
     });
 
-    it("should return specified response body for get", async function() {
-        this.timeout(30000);
-
+    it("should return specified response body for get", async () => {
         const body = { custom: "api" };
         const url = "/haha";
         apiServer.setRouter(
@@ -254,7 +253,7 @@ describe("Router Builder", () => {
         apiServer.setRouter(
             new RouteBuilder()
                 .withUrl(url)
-                 .withQueryStringParam({ key: "magic", value: "true" })
+                .withQueryStringParam({ key: "magic", value: "true" })
                 .withQueryStringParam({ key: "fish", value: "green" })
                 .withResponseBody(responseBody)
                 .get(),

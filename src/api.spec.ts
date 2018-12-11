@@ -18,8 +18,10 @@ describe("Api Server", () => {
         const url = "/heloo";
         const absoluteUrl = `${apiServer.url}${url}`;
         const username = "Batman";
+        // tslint:disable-next-line:no-hardcoded-credentials
         const password = "Superman stinks";
         const authType = "Basic";
+        // tslint:disable-next-line:no-nested-template-literals
         const authHeader = `${authType} ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
         apiServer.setRouter(
@@ -46,7 +48,7 @@ describe("Api Server", () => {
             });
         });
 
-        const result = await callPost as RequestResponse;
+        const result = await callPost;
 
         assert.deepEqual(result.body, { hello: "me" });
     });

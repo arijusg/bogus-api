@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "lint": "tslint --fix --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
+    "lint2": "tslint --fix --verbose --type-check --project tsconfig.json -c tslint.json 'src/**/*.ts'",
+    "lint": "tslint --project tsconfig.json --format verbose -c tslint.json",
     "test": "export TS_NODE_CACHE='false' && nyc _mocha",
     "test-dev": "TS_NODE_CACHE='false' mocha -w",
     "test-dev-wip": "TS_NODE_CACHE='false' _mocha -w --grep 'wip'",
