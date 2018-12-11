@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { CoreOptions, post, RequestCallback, RequestResponse } from "request";
+import { CoreOptions, post, RequestResponse } from "request";
 
 import { BogusApiServer, RouteBuilder } from "./api";
 

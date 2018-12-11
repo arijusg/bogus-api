@@ -4,8 +4,6 @@ import { spawn } from "child_process";
 import { Express, NextFunction, Request, Response, Router } from "express";
 import * as jsonServer from "json-server";
 
-import { RouteBuilder } from "./route-builder";
-
 export class BogusApiServer {
 
     public get url(): string { return this.baseUrl; }
@@ -62,16 +60,21 @@ export class BogusApiServer {
     }
 
     public async stop(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.serverInstance.close();
 
-        this.serverInstance.close();
+            const cmd = "pkill";
+            const params = ["-SIGINT", this.serverInstanceTitle];
 
-        const cmd = "pkill";
-        const params = ["-SIGINT", this.serverInstanceTitle];
-
-        const s = spawn(cmd, params, { stdio: "inherit" });
-        s.on("close", (code) => {
-            console.log(`Bogus JSON Server is down :: ${this.baseUrl}`);
-            return Promise.resolve();
+            const s = spawn(cmd, params, { stdio: "inherit" });
+            s.on("close", (code) => {
+                console.log(`Bogus JSON Server is down :: ${this.baseUrl}`);
+                resolve();
+            });
+            s.on("error", (error) => {
+                console.log(`Bogus JSON Server is down with error :: ${this.baseUrl}`);
+                reject();
+            });
         });
     }
 
